@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  tts-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tts_service_container
+    ports:
+      - "5003:5003" 
+    volumes:
+      - ./tts_cache:/app/tts_cache 
+    environment:
+      - TTS_CACHE_DIR=/app/tts_cache 
+    stdin_open: true
+    tty: true
+    networks:
+      - tts_network
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+networks:
+  tts_network:
+    driver: bridge
